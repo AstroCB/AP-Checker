@@ -1,0 +1,36 @@
+{
+    "name": "AP-Checker-for-NYU",
+    "version": "1.0.0",
+    "description": "Checks whether AP credit has been posted to Albert",
+    "keywords": [
+        "NYU",
+        "Albert",
+        "Transfer Credit",
+        "AP"
+    ],
+    "author": {
+        "name": "Cameron Bernhardt",
+        "email": "me@cameronbernhardt.com",
+        "url": "http://cameronbernhardt.com/"
+    },
+    "homepage": "http://apchecker-astrocb.rhcloud.com/",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AstroCB/"
+    },
+
+    "engines": {
+        "node": ">= 0.6.0",
+        "npm": ">= 1.0.0"
+    },
+
+    "dependencies": {
+        "express": "~3.4.4",
+        "socket.io": "~1.4.5"
+    },
+    "devDependencies": {},
+    "bundleDependencies": [],
+
+    "private": true,
+    "main": "server.js"
+}

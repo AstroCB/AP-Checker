@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AP Checker for Albert</title>
+    <script type="text/javascript" src="socketio.js"></script>
+    <script type="text/javascript">
+        window.addEventListener("load", function() {
+            var socket = io('http://apchecker-astrocb.rhcloud.com:8000');
+
+            function submitCreds() {
+                // Pass user credentials (WARNING: credentials passed over insecure HTTP connection may be vulnerable to interception)
+                // In other words, don't use this tool over public unsecured Wi-Fi or, if you do, change your password when you're finished
+                var usrId = document.getElementById("user").value,
+                    pwd = document.getElementById("pass").value;
+                if (usrId && pwd) {
+                    document.getElementById("loading").style.visibility = "visible"; // Unhide loading indicator
+                    socket.emit("userData", { // Again, EXTREMELY INSECURE
+                        user: usrId,
+                        password: pwd
+                    });
+                } else {
+                    alert("Username and/or password invalid. Check that you've entered both correctly.");
+                }
+            }
+
+            function checkKey(e) {
+                if (e.keyCode === 13) {
+                    submitCreds();
+                }
+            }
+
+            document.getElementById("go").addEventListener("click", submitCreds, false);
+            document.getElementById("user").addEventListener("keypress", checkKey, false);
+            document.getElementById("pass").addEventListener("keypress", checkKey, false);
+            var existingRep;
+            socket.on("reportLoaded", function(data) {
+                document.getElementById("loading").style.visibility = "hidden"; // Re-hide loading indicator
+                // Set image properties
+                rep = document.createElement("img");
+                rep.setAttribute("src", data.filename);
+                rep.setAttribute("id", "report");
+                rep.setAttribute("title", "If this isn't displaying properly, you may have entered your username or password incorrectly. Please try again.");
+                // Replace existing report if necessary
+                if (existingRep) {
+                    document.getElementById("container").replaceChild(rep, existingRep);
+                } else {
+                    document.getElementById("container").appendChild(rep);
+                }
+                existingRep = rep;
+            });
+        });
+    </script>
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=EB+Garamond);
+        body {
+            text-align: center;
+            font-family: Garamond, "EB Garamond", Georgia, serif;
+        }
+
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #loading,
+        #thumb {
+            visibility: hidden;
+        }
+
+        #thumb {
+            width: 0;
+        }
+
+        #report {
+            cursor: help;
+        }
+
+        footer {
+            bottom: 0;
+            color: grey;
+            background-color: white;
+            font-size: 12pt;
+            width: 1200px;
+            height: 20px;
+            position: fixed;
+            margin-left: -600px;
+            left: 50%;
+        }
+        /* Custom styles for footer depending on screen width */
+
+        @media(min-width: 1500px) {
+            footer {
+                font-size: 14pt;
+                width: 1300px;
+                margin-left: 650px;
+            }
+        }
+
+        @media(max-width: 1300px) {
+            footer {
+                font-size: 10pt;
+                width: 1000px;
+                margin-left: -500px;
+            }
+        }
+
+        @media(max-width: 1000px) {
+            footer {
+                font-size: 9pt;
+                width: 900px;
+                margin-left: -450px;
+            }
+        }
+
+        @media(max-width: 900px) {
+            footer {
+                margin-left: 0;
+                left: 0;
+                height: auto;
+                width: auto;
+                font-size: 12pt;
+            }
+        }
+        /* If screen is too small to display the whole report (693px), scale it */
+
+        @media(max-width: 693px) {
+            #report {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>AP Checker for Albert</h1>
+    <label for="user">NetID: </label>
+    <input type="text" name="user" id="user" />
+    <br/>
+    <label for="pass">Password: </label>
+    <input type="password" name="pass" id="pass" />
+    <br/>
+    <button id="go">Get report</button>
+    <br/>
+    <br/>
+    <img id="loading" src="loading.gif" />
+    <div id="container"></div>
+    <footer>This tool is in no way affiliated with NYU or Albert, and I make no guarantees as to its accuracy, stability, or security. The user assumes all liability for the actions and results of this tool.</footer>
+    <!-- Hidden image for thumbnail purposes -->
+    <img id="thumb" src="thumb.png" />
+    <!-- Google Analytics -->
+    <script>
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-75896629-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+</body>
+
+</html>
